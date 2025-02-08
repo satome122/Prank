@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funny Personality Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(120deg, #6a11cb, #b721ff);
+            color: white;
+            padding: 20px;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #start-screen, #quiz-screen, #loading-screen, #result-screen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 20px;
+            margin: 10px;
+            cursor: pointer;
+            background: #ff6b81;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        button:hover {
+            background: #ff4757;
+            transform: scale(1.1);
+        }
+
+        #loading-screen h1 {
+            font-size: 60px;
+            font-weight: bold;
+            animation: flash 1s infinite alternate;
+        }
+
+        #result-screen {
+            background: black;
+            color: white;
+            flex-direction: row;
+            gap: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .result-container {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 10vw;
+            font-weight: bold;
+            display: flex;
+            gap: 20px;
+            animation: moveText 5s linear infinite;
+        }
+
+        .result-word {
+            font-weight: bold;
+        }
+
+        #you { color: white; }
+        #are { color: yellow; }
+        #gay { 
+            color: red; 
+            text-shadow: 0 0 20px #ff0000, 0 0 30px #ff4500, 0 0 50px #ff6347;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes moveText {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة البداية -->
+    <div id="start-screen">
+        <h1>Funny Personality Test</h1>
+        <button onclick="startQuiz()">Start the Test</button>
+    </div>
+
+    <!-- شاشة الاختبار -->
+    <div id="quiz-screen">
+        <h2 id="question-text">Question goes here?</h2>
+        <div>
+            <button class="answer-btn" onclick="selectAnswer()">A - Answer 1</button>
+            <button class="answer-btn" onclick="selectAnswer()">B - Answer 2</button>
+            <button class="answer-btn" onclick="selectAnswer()">C - Answer 3</button>
+            <button class="answer-btn" onclick="selectAnswer()">D - Answer 4</button>
+        </div>
+        <button id="continue-btn" onclick="nextQuestion()">Continue</button>
+    </div>
+
+    <!-- شاشة الانتظار -->
+    <div id="loading-screen">
+        <h1>RESULT....</h1>
+    </div>
+
+    <!-- شاشة النتيجة -->
+    <div id="result-screen">
+        <div class="result-container">
+            <span class="result-word" id="you">YOU</span>
+            <span class="result-word" id="are">ARE 🫵</span>
+            <span class="result-word" id="gay">GAY 🔥</span>
+        </div>
+    </div>
+
+    <audio id="result-sound" src="result.mp3"></audio>
+
+    <script>
+        let questions = [
+            { question: "What is your favorite color?", answers: ["Red", "Blue", "Green", "Pink"] },
+            { question: "What is your favorite food?", answers: ["Pizza", "Salad", "Burger", "Sushi"] },
+            { question: "What do you do in free time?", answers: ["Gaming", "Watching movies", "Reading books", "Dancing"] },
+            { question: "What is your favorite animal?", answers: ["Dog", "Cat", "Horse", "Peacock"] },
+            { question: "What do you prefer in a partner?", answers: ["Intelligence", "Beauty", "Money", "Muscles"] }
+        ];
+
+        let currentQuestion = 0;
+
+        function startQuiz() {
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("quiz-screen").style.display = "flex";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= questions.length) {
+                showLoading();
+                return;
+            }
+            let q = questions[currentQuestion];
+            document.getElementById("question-text").innerText = q.question;
+            let buttons = document.querySelectorAll(".answer-btn");
+            buttons.forEach((btn, index) => {
+                btn.innerText = `${["A", "B", "C", "D"][index]} - ${q.answers[index]}`;
+                btn.disabled = false;
+                btn.style.display = "inline-block";
+            });
+            document.getElementById("continue-btn").style.display = "none";
+        }
+
+        function selectAnswer() {
+            let buttons = document.querySelectorAll(".answer-btn");
+            buttons.forEach(btn => btn.disabled = true);
+            document.getElementById("continue-btn").style.display = "inline-block";
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showLoading();
+            }
+        }
+
+        function showLoading() {
+            document.getElementById("quiz-screen").style.display = "none";
+            document.getElementById("loading-screen").style.display = "flex";
+            setTimeout(showResult, 3000);
+        }
+
+        function showResult() {
+            document.getElementById("loading-screen").style.display = "none";
+            document.getElementById("result-screen").style.display = "flex";
+            document.getElementById("result-sound").play();
+        }
+    </script>
+
+</body>
+</html>
+
+
+
